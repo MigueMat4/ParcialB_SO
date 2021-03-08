@@ -35,7 +35,9 @@
           <Group type="102" alignment="1" attributes="0">
               <EmptySpace max="32767" attributes="0"/>
               <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
-              <EmptySpace min="-2" pref="120" max="-2" attributes="0"/>
+              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+              <Component id="chkHilos" min="-2" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="61" max="-2" attributes="0"/>
               <Component id="lblHH" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="lblMM" min="-2" max="-2" attributes="0"/>
@@ -58,7 +60,7 @@
                       <Component id="btnBatalla" min="-2" pref="113" max="-2" attributes="0"/>
                   </Group>
               </Group>
-              <EmptySpace max="32767" attributes="0"/>
+              <EmptySpace pref="235" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -71,6 +73,7 @@
                   <Component id="lblHH" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="lblMM" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="lblSS" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="chkHilos" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="jSeparator1" min="-2" pref="10" max="-2" attributes="0"/>
@@ -174,6 +177,11 @@
     <Component class="javax.swing.JLabel" name="lblSS">
       <Properties>
         <Property name="text" type="java.lang.String" value="SS"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JCheckBox" name="chkHilos">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Con hilos"/>
       </Properties>
     </Component>
   </SubComponents>

@@ -42,7 +42,17 @@ public class frmMain extends javax.swing.JFrame {
     }
     
     // clase para elegir a los peleadores
-    public class RumbleArena {
+    public class RumbleArena extends Thread {
+        @Override
+        @SuppressWarnings("empty-statement")
+        public void run() {
+            while (yggdrasill == null)
+                ;
+            while (yggdrasill.getDigimons() == null)
+                ;
+            elegirDigimon();
+        }
+        
         public void elegirDigimon() {
             btnElegir.setEnabled(false);
             btnBatalla.setEnabled(false);
@@ -62,7 +72,19 @@ public class frmMain extends javax.swing.JFrame {
             }
             lblDigimon1.setText(peleador1.getName());
             // código para elegir al segundo peleador
-            // <Inserte su código aquí>
+            int digielecto2 = (int) ((Math.random() * ((yggdrasill.getDigimons().size() - 1) - 0)) + 0);
+            peleador2 = yggdrasill.getDigimons().get(digielecto2);
+            try {
+                URL url = new URL(peleador2.getImg());
+                Image img = ImageIO.read(url);
+                img = img.getScaledInstance(100, 100,  java.awt.Image.SCALE_SMOOTH);
+                lblDigimon2.setIcon(new ImageIcon(img));
+            } catch (MalformedURLException ex) {
+                Logger.getLogger(frmMain.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IOException ex) {
+                Logger.getLogger(frmMain.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            lblDigimon2.setText(peleador2.getName());
             System.out.println("¡Peladores listos para la batalla!");
             btnElegir.setEnabled(true);
             btnBatalla.setEnabled(true);
@@ -90,6 +112,7 @@ public class frmMain extends javax.swing.JFrame {
         lblHH = new javax.swing.JLabel();
         lblMM = new javax.swing.JLabel();
         lblSS = new javax.swing.JLabel();
+        chkHilos = new javax.swing.JCheckBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -141,6 +164,8 @@ public class frmMain extends javax.swing.JFrame {
 
         lblSS.setText("SS");
 
+        chkHilos.setText("Con hilos");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -156,7 +181,9 @@ public class frmMain extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabel1)
-                .addGap(120, 120, 120)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(chkHilos)
+                .addGap(61, 61, 61)
                 .addComponent(lblHH)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(lblMM)
@@ -174,7 +201,7 @@ public class frmMain extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addGap(244, 244, 244)
                         .addComponent(btnBatalla, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(235, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -184,7 +211,8 @@ public class frmMain extends javax.swing.JFrame {
                     .addComponent(jLabel1)
                     .addComponent(lblHH)
                     .addComponent(lblMM)
-                    .addComponent(lblSS))
+                    .addComponent(lblSS)
+                    .addComponent(chkHilos))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -240,25 +268,37 @@ public class frmMain extends javax.swing.JFrame {
         if (peleador2.getLevel().equals("Fresh"))
             nivel2 = 1;
         // Decisión de batalla
-        // <Inserte su código aquí>
+        if (nivel1 > nivel2)
+            JOptionPane.showMessageDialog(null, peleador1.getName() + " es el ganador de la batalla", "Resultado", JOptionPane.INFORMATION_MESSAGE);
+        else if (nivel1 == nivel2)
+            JOptionPane.showMessageDialog(null, "Es un empate", "Resultado", JOptionPane.INFORMATION_MESSAGE);
+        else
+            JOptionPane.showMessageDialog(null, peleador2.getName() + " es el ganador de la batalla", "Resultado", JOptionPane.INFORMATION_MESSAGE);
         System.out.println("¡Resultado de la batalla!");
     }//GEN-LAST:event_btnBatallaActionPerformed
 
     private void btnGetDigimonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGetDigimonActionPerformed
         yggdrasill = new DigiWorld(model);
-        try {
-            yggdrasill.descargarDatos();
-        } catch (IOException ex) {
-            Logger.getLogger(frmMain.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (InterruptedException ex) {
-            Logger.getLogger(frmMain.class.getName()).log(Level.SEVERE, null, ex);
+        if (chkHilos.isSelected())
+            yggdrasill.start();
+        else {
+            try {
+                yggdrasill.descargarDatos();
+            } catch (IOException ex) {
+                Logger.getLogger(frmMain.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(frmMain.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
         btnGetDigimon.setEnabled(false);
     }//GEN-LAST:event_btnGetDigimonActionPerformed
 
     private void btnElegirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnElegirActionPerformed
         estadio = new RumbleArena(); // un nuevo estadio para cada clic en el botón de batalla
-        estadio.elegirDigimon(); // código de la clase para elegir a los digimon que pelearán
+        if (chkHilos.isSelected())
+            estadio.start();
+        else
+            estadio.elegirDigimon(); // código de la clase para elegir a los digimon que pelearán
     }//GEN-LAST:event_btnElegirActionPerformed
 
     /**
@@ -330,6 +370,7 @@ public class frmMain extends javax.swing.JFrame {
     private javax.swing.JButton btnBatalla;
     private javax.swing.JButton btnElegir;
     private javax.swing.JButton btnGetDigimon;
+    private javax.swing.JCheckBox chkHilos;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator1;

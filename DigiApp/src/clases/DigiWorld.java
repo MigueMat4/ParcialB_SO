@@ -22,13 +22,22 @@ import org.codehaus.jackson.type.TypeReference;
  *
  * @author Miguel Matul <https://github.com/MigueMat4>
  */
-public final class DigiWorld {
+public final class DigiWorld extends Thread {
     private static final String DIGIMON_API_URL = "https://digimon-api.vercel.app/api/digimon/";
     private List<Digimon> digimons;
     private final DefaultTableModel tabla;
     
     public DigiWorld(DefaultTableModel model){
         tabla = model;
+    }
+    
+    @Override
+    public void run() {
+        try {
+            descargarDatos();
+        } catch (IOException | InterruptedException ex) {
+            Logger.getLogger(DigiWorld.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     
     public void descargarDatos() throws IOException, InterruptedException{
@@ -46,7 +55,7 @@ public final class DigiWorld {
         // obtener listado de Digimon
         digimons = mapper.readValue(response.body(), new TypeReference<List<Digimon>>() {});
         // ordenar listado de Digimon
-        // <Inserte su código aquí>
+        digimons.sort(Comparator.comparing(Digimon::getName));
         // agregar listado de Digimon a la tabla
         digimons.forEach((digimon) -> {
             tabla.addRow(new Object[]{digimon.getName(), digimon.getLevel()});
